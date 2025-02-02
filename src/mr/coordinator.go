@@ -215,6 +215,9 @@ func (c *Coordinator) Done() bool {
 }
 
 func BadWorkerChecker(c *Coordinator) {
+	// This function reads state without any lock.
+	// It will trigger DATA RACE warning when running with -race flag.
+	// However, it is okay because in Undispatch(), it will check again.
 	for {
 		// fmt.Println("Checking bad workers...")
 		for i := 0; i < len(c.mapTasks); i++ {
